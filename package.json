@@ -1,20 +1,20 @@
 {
   "name": "leaflet.polyline.snakeanim",
-  "version": "0.2.0",
-  "description": "Animates Leaflet polylines so they creep into full length",
+  "version": "0.2.1",
+  "description": "Based on Ivan Sanchez Ortega's snakanim library",
   "main": "L.Polyline.SnakeAnim.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/IvanSanchez/Leaflet.Polyline.SnakeAnim.git"
+    "url": "https://github.com/bhakthimayo/Leaflet.Polyline.SnakeAnim.git"
   },
   "keywords": [
     "leaflet",
     "polyline",
     "animation"
   ],
-  "author": "Iván Sánchez Ortega <ivan@sanchezortega.es>",
+  "author": "mayo",
   "license": "Beerware",
   "bugs": {
-    "url": "https://github.com/IvanSanchez/Leaflet.Polyline.SnakeAnim/issues"
+    "url": "https://github.com/bhakthimayo/Leaflet.Polyline.SnakeAnim.git/issues"
   }
 }
