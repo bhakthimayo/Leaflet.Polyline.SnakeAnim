@@ -4,6 +4,8 @@ Later, <pitou.games@gmail.com> enhanced this file, in order to add more feature.
 As long as you retain this notice you can do whatever you want with this stuff. If we meet some day, and you think
 this stuff is worth it, you can buy me a beer in return.*/
 
+///// Added functionalities like Pause and Resume, follow the head functionalities by me.
+
 ///// FIXME: Use path._rings instead of path._latlngs???
 ///// FIXME: Panic if this._map doesn't exist when called.
 
@@ -29,6 +31,8 @@ L.Polyline.include({
 	_snakingIn: false,
 	_snakingOut: false,
 
+	// Pause and Resume Related
+	_animRef: null,
 
 	/// TODO: accept a 'map' parameter, fall back to addTo() in case
 	/// performance.now is not available.
@@ -134,7 +138,7 @@ L.Polyline.include({
 		this.setLatLngs(this._latlngs);
 		// Animate only if snake in moving
 		if (this._snakingIn || this._snakingOut) {
-			L.Util.requestAnimFrame(this._snake, this);
+			this._animRef = L.Util.requestAnimFrame(this._snake, this);
 		}
 
 		return this;
@@ -190,6 +194,17 @@ L.Polyline.include({
 		// Put a new head in place.
 		let headLatLng = this._map.containerPointToLatLng(headPoint);
 		this._latlngs[this._snakingRings].push(headLatLng);
+
+		// Following the snake head
+		//this._map.panTo(this._map.containerPointToLatLng(nextPoint));
+		let ptlatlng = this._map.containerPointToLatLng(nextPoint);
+		if (!this._map.getBounds().contains(ptlatlng)) {
+			this._map.panTo(ptlatlng);
+		}
+
+		// let bounds = new L.LatLngBounds(this._snakeLatLngs[this._snakingRings][this._snakingVertices],
+		//   this._snakeLatLngs[this._snakingRings][this._snakingVertices + 1])
+		// this._map.fitBounds(bounds, { padding: [150, 150] });
 
 		this.fire('snakeIn', headLatLng);
 		return this;
@@ -278,6 +293,31 @@ L.Polyline.include({
 			this.setLatLngs(this._snakeLatLngs);
 		}
 
+		return this;
+	},
+
+	snakePause: function () {
+		if (this._animRef) {
+			L.Util.cancelAnimFrame(this._animRef)
+		}
+		this.fire('snakePaused');
+		return this;
+	},
+
+	// snakePlay: function () {
+	//   if (this._animRef) {
+	//     L.Util.cancelAnimFrame(this._animRef);
+	//   }
+	//   this.fire('snakePaused');
+	// },
+
+	snakeResume: function () {
+		if (this._animRef) {
+			this._snakingTime = performance.now();
+			this._animRef = L.Util.requestAnimFrame(this._snake, this)
+
+		}
+		this.fire('snakeResumed');
 		return this;
 	}
 
@@ -448,8 +488,6 @@ L.LayerGroup.include({
 	}
 
 });
-
-
 
 L.LayerGroup.mergeOptions({
 	snakingPause: 200,
